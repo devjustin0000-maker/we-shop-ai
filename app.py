@@ -8,7 +8,7 @@ UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # 🔴 PUT YOUR REAL OPENAI KEY HERE
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="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")
 
 
 @app.route('/')
