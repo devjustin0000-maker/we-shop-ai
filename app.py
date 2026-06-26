@@ -3,6 +3,12 @@ import os
 from openai import OpenAI
 
 app = Flask(__name__)
+from flask import request, redirect
+
+@app.before_request
+def clean_url():
+    if request.args.get("utm_source"):
+        return redirect(request.path, code=301)
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
