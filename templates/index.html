@@ -8,14 +8,29 @@
 <h1>WE SHOP AI</h1>
 
 <form action="/upload" method="POST" enctype="multipart/form-data">
+
     <input type="file" name="file" required>
-    <button type="submit">Upload Image</button>
+
+    <br><br>
+
+    <h3>Tell AI what you want to edit</h3>
+
+    <textarea name="prompt" rows="4" cols="50"
+    placeholder="Example:
+Remove the background
+Change the shirt to blue
+Make it look like a cartoon"></textarea>
+
+    <br><br>
+
+    <button type="submit">Edit with AI</button>
+
 </form>
 
 <br><br>
 
 <a href="/payment">
-    <button>Pay ₹1</button>
+    <button type="button">Pay ₹1</button>
 </a>
 
 </body>
