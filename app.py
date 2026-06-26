@@ -1,59 +1,25 @@
-from flask import Flask, render_template, request, send_from_directory
-import os
-
-app = Flask(__name__)
-
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/payment')
-def payment():
-    return render_template('payment.html')
-
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['file']
-    prompt = request.form.get('prompt')
+    prompt = request.form['prompt']
 
     if file:
         filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(filepath)
 
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        ai_result = response.choices[0].message.content
+
         return f"""
-        <h2>Image uploaded successfully!</h2>
-        <p><b>AI Prompt:</b> {prompt}</p>
-        <p>Next, we'll connect this prompt to the AI.</p>
-        <a href="/">Go Back</a>
+        <h2>Upload Successful</h2>
+        <p><b>Your Prompt:</b> {prompt}</p>
+        <p><b>AI Response:</b> {ai_result}</p>
         """
 
-    return "No file selected."
-
-if __name__ == "__main__":
-    app.run(debug=True)
-        return f'''
-        <h2>Upload Successful!</h2>
-        <img src="/uploads/{file.filename}" width="400">
-        <br><br>
-        <a href="/">Upload Another Image</a>
-        '''
-
     return "No file selected"
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
-
-# Payment page
-@app.route('/payment')
-def payment():
-    return render_template('payment.html')
-    @app.route('/payment')
-def payment():
-    return render_template('payment.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
