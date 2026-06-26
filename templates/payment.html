@@ -3,13 +3,17 @@
 <head>
     <title>Payment</title>
 </head>
-<body>
+<body style="font-family:Arial; text-align:center; padding:40px;">
 
-<h1>Payment Page</h1>
+    <h1>Pay ₹1</h1>
 
-<p>Pay ?1 to continue.</p>
+    <p>Please scan the QR code below.</p>
 
-<button>Pay Now</button>
+    <img src="{{ url_for('static', filename='qr.jpg') }}" width="300">
+
+    <h3>UPI ID: yourupi@bank</h3>
+
+    <p>After payment, take a screenshot for your records.</p>
 
 </body>
 </html>
