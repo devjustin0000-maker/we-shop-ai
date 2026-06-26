@@ -56,6 +56,11 @@ def upload():
             return f"<h2>AI Error:</h2><p>{e}</p>"
 
     return "No file selected"
+    
+    @app.route("/uploads")
+def uploads():
+    files = os.listdir(UPLOAD_FOLDER)
+    return "<br>".join(files)
 
 
 if __name__ == '__main__':
