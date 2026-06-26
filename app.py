@@ -9,19 +9,31 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/')
 def home():
     return render_template('index.html')
-    
-    @app.route('/payment')
+
+@app.route('/payment')
 def payment():
     return render_template('payment.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['file']
+    prompt = request.form.get('prompt')
 
     if file:
         filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(filepath)
 
+        return f"""
+        <h2>Image uploaded successfully!</h2>
+        <p><b>AI Prompt:</b> {prompt}</p>
+        <p>Next, we'll connect this prompt to the AI.</p>
+        <a href="/">Go Back</a>
+        """
+
+    return "No file selected."
+
+if __name__ == "__main__":
+    app.run(debug=True)
         return f'''
         <h2>Upload Successful!</h2>
         <img src="/uploads/{file.filename}" width="400">
