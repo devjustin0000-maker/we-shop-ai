@@ -9,6 +9,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/')
 def home():
     return render_template('index.html')
+    
+    @app.route('/payment')
+def payment():
+    return render_template('payment.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -33,6 +37,9 @@ def uploaded_file(filename):
 
 # Payment page
 @app.route('/payment')
+def payment():
+    return render_template('payment.html')
+    @app.route('/payment')
 def payment():
     return render_template('payment.html')
 
