@@ -1,67 +1,71 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 import os
-from openai import OpenAI
 
 app = Flask(__name__)
-from flask import request, redirect
-
-@app.before_request
-def clean_url():
-    if request.args.get("utm_source"):
-        return redirect(request.path, code=301)
+app.secret_key = "mysecretkey123"
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# 🔴 PUT YOUR REAL OPENAI KEY HERE
-client = OpenAI(api_key="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")
+# Change this password to anything you want
+PASSWORD = "805090"
 
+# Login Page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        if request.form['password'] == PASSWORD:
+            session['logged_in'] = True
+            return redirect(url_for('home'))
+        else:
+            return "<h2>Wrong Password!</h2><a href='/login'>Try Again</a>"
 
+    return render_template('login.html')
+
+# Home Page
 @app.route('/')
 def home():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     return render_template('index.html')
 
-
-@app.route('/payment')
-def payment():
-    return render_template('payment.html')
-
-
+# Upload File
 @app.route('/upload', methods=['POST'])
 def upload():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
     file = request.files['file']
-    prompt = request.form['prompt']
 
     if file:
         filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(filepath)
 
-        try:
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
-            )
+        return f"""
+        <h2>Upload Successful!</h2>
+        <p>File: {file.filename}</p>
 
-            ai_result = response.choices[0].message.content
+        <br>
 
-            return f"""
-            <h2>Upload Successful</h2>
-            <p><b>Your Prompt:</b> {prompt}</p>
-            <p><b>AI Response:</b> {ai_result}</p>
-            """
+        <a href="/payment">
+            <button>Pay ₹1</button>
+        </a>
+        """
 
-        except Exception as e:
-            return f"<h2>AI Error:</h2><p>{e}</p>"
+    return "No file selected."
 
-    return "No file selected"
-    
-    @app.route("/uploads")
-def uploads():
-    files = os.listdir(UPLOAD_FOLDER)
-    return "<br>".join(files)
+# Payment Page
+@app.route('/payment')
+def payment():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    return render_template('payment.html')
 
+# Logout
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
